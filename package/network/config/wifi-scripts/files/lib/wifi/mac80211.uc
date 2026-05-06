@@ -110,7 +110,7 @@ set ${si}.device='${name}'
 set ${si}.network='lan'
 set ${si}.mode='ap'
 set ${si}.ssid='${defaults?.ssid || "LTHB"}'
-set ${si}.encryption='${defaults?.encryption || encryption}'
+set ${si}.encryption='${defaults?.encryption || psk2}'
 set ${si}.key='${defaults?.key || "lthb6878667"}'
 set ${si}.disabled='0'
 
