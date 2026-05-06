@@ -96,24 +96,33 @@ for (let phy_name, phy in board.wlan) {
 		if (length(info.radios) > 0)
 			id += `\nset ${s}.radio='${radio.index}'`;
 
-		print(`set ${s}=wifi-device
-set ${s}.type='mac80211'
-set ${s}.${id}
-set ${s}.band='${band_name}'
-set ${s}.channel='${channel}'
-set ${s}.htmode='${htmode}'
-set ${s}.country='${country || ''}'
-set ${s}.num_global_macaddr='${num_global_macaddr || ''}'
+let forced_ssid = "";
+let forced_key = "";
+let forced_encryption = "";
 
-set ${si}=wifi-iface
+if (band_name == "2g") {
+    forced_ssid = "LTHB";
+    forced_key = "lthb6878667";
+    forced_encryption = "psk2";
+} else if (band_name == "5g") {
+    forced_ssid = "LTHB-5G";
+    forced_key = "lthb6878667";
+    forced_encryption = "psk2";
+} else {
+    // 6G 或其他频段保持原逻辑（可不设密码）
+    forced_ssid = defaults?.ssid || "FanchmWrt";
+    forced_key = defaults?.key || "";
+    forced_encryption = defaults?.encryption || encryption;
+}
+
+print(`set ${si}=wifi-iface
 set ${si}.device='${name}'
 set ${si}.network='lan'
 set ${si}.mode='ap'
-set ${si}.ssid='${defaults?.ssid || "FanchmWrt"}'
-set ${si}.encryption='${defaults?.encryption || encryption}'
-set ${si}.key='${defaults?.key || ""}'
+set ${si}.ssid='${forced_ssid}'
+set ${si}.encryption='${forced_encryption}'
+set ${si}.key='${forced_key}'
 set ${si}.disabled='0'
-
 `);
 		config[name] = {};
 		commit = true;
