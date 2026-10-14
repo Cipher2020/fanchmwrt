@@ -1,0 +1,36 @@
+#!/bin/sh
+# 文件路径: files/etc/uci-defaults/99-custom-settings
+
+# --- 配置变量 ---
+LAN_IP="192.168.9.1"
+# 2.4G 配置
+WIFI_SSID_2G="LTHB"
+WIFI_PASS_2G="lthb6878667"
+# 5G 配置
+WIFI_SSID_5G="LTHB-5G"
+WIFI_PASS_5G="lthb6878667"
+
+# --- 使用 UCI 批量命令配置 ---
+uci -q batch << EOI
+# 1. 设置 LAN IP 和子网掩码
+set network.lan.ipaddr='$LAN_IP'
+set network.lan.netmask='255.255.255.0'
+
+# 2. 设置 2.4G WiFi (通常为 radio0)
+set wireless.radio0.ssid='$WIFI_SSID_2G'
+set wireless.radio0.encryption='psk2'
+set wireless.radio0.key='$WIFI_PASS_2G'
+set wireless.radio0.disabled='0'
+
+# 3. 设置 5G WiFi (通常为 radio1，如果设备没有5G可注释掉)
+set wireless.radio1.ssid='$WIFI_SSID_5G'
+set wireless.radio1.encryption='psk2'
+set wireless.radio1.key='$WIFI_PASS_5G'
+set wireless.radio1.disabled='0'
+EOI
+
+# 提交更改
+uci commit network
+uci commit wireless
+
+exit 0
